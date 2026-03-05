@@ -12,11 +12,11 @@
       <div class="flex-1 flex flex-col h-full bg-[#1c1c1e] relative overflow-hidden">
         <div class="flex-1 flex flex-col p-6 md:p-12 min-h-0 overflow-y-auto pb-24">
           <div class="flex justify-between items-center mb-4">
-            <h1 class="text-xl font-black text-indigo-500 tracking-tight">Cliking Editor</h1>
+            <h1 class="text-3xl font-black text-indigo-500 tracking-tight">Cliking Editor</h1>
             <span id="char-count" class="text-[10px] font-mono text-indigo-400">0 / 300</span>
           </div>
-          <%= form.text_area :caption, id: "input-text", maxlength: "300", placeholder: "Votre message...", 
-              class: "flex-1 w-full bg-transparent border-none focus:ring-0 text-base md:text-base placeholder-gray-600 text-gray-300 p-0 resize-none transition-colors" %>
+         <%= form.text_area :caption, id: "input-text", maxlength: "300", placeholder: "Votre message...", 
+    class: "w-full h-[200px] bg-transparent border-none focus:ring-0 text-base md:text-base placeholder-gray-600 text-gray-300 p-0 resize-none transition-colors" %>
         </div>
 
         <div id="control-panel" 
