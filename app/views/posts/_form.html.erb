@@ -1,0 +1,162 @@
+<%= form_with(model: post, class: "contents") do |form| %>
+  <div class="w-screen h-screen bg-black flex items-center justify-center overflow-hidden font-sans text-white md:p-28">
+    <div class="w-full h-full md:h-auto md:aspect-[16/10] md:max-w-7xl bg-[#1c1c1e] shadow-2xl md:rounded-[3rem] overflow-hidden flex flex-col md:flex-row relative border-gray-800 md:border">
+      
+      <div class="w-full h-[40%] md:h-full md:w-1/2 bg-black flex items-center justify-center overflow-hidden shrink-0 border-b md:border-b-0 md:border-r border-gray-800">
+        <img id="image-preview" src="" class="hidden w-full h-full object-cover transition-all duration-300" />
+        <div id="placeholder" class="text-gray-500 flex flex-col items-center">
+          <p class="text-[10px] uppercase tracking-widest font-bold">Aperçu du média</p>
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col h-full bg-[#1c1c1e] relative overflow-hidden">
+        <div class="flex-1 flex flex-col p-6 md:p-12 min-h-0 overflow-y-auto pb-24">
+          <div class="flex justify-between items-center mb-4">
+            <h1 class="text-xl font-black text-white tracking-tight">Cliking Editor</h1>
+            <span id="char-count" class="text-[10px] font-mono text-indigo-400">0 / 300</span>
+          </div>
+          <%= form.text_area :caption, id: "input-text", maxlength: "300", placeholder: "Votre message...", 
+              class: "flex-1 w-full bg-transparent border-none focus:ring-0 text-base md:text-lg placeholder-gray-600 text-gray-300 p-0 resize-none transition-colors" %>
+        </div>
+
+        <div id="control-panel" 
+             style="transform: translateY(88%);" 
+             class="absolute bottom-0 left-0 w-full h-full bg-[#2c2c2e] rounded-t-[3rem] md:rounded-none shadow-[0_-20px_50px_rgba(0,0,0,0.8)] transition-transform duration-500 ease-in-out z-50">
+          
+          <button type="button" onclick="togglePanel()" class="w-full flex flex-col items-center py-5 group cursor-pointer active:bg-white/5 relative z-50">
+            <div id="panel-handle" class="w-12 h-1.5 bg-gray-700 group-hover:bg-indigo-500 group-active:bg-indigo-500 rounded-full transition-all duration-300"></div>
+            <span id="panel-status" class="text-[8px] uppercase tracking-widest text-gray-500 mt-2 font-bold pointer-events-none">Ouvrir</span>
+          </button>
+
+          <div id="panel-content" class="px-8 pb-32 space-y-8 overflow-y-auto h-full">
+            <div>
+              <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4 font-bold">Filtres</p>
+              <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                <button type="button" onclick="setFilterType(this, 'none')" class="filter-btn shrink-0 p-0.5 border-2 border-indigo-500 rounded-2xl transition-all">
+                  <div class="w-14 h-14 bg-gray-800 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16m8-16v16m8-16v16" /></svg>
+                  </div>
+                  <span class="text-[9px] block mt-2 text-center font-bold text-indigo-400">Normal</span>
+                </button>
+                <button type="button" onclick="setFilterType(this, 'grayscale')" class="filter-btn shrink-0 p-0.5 border-2 border-transparent rounded-2xl"><div class="w-14 h-14 bg-gray-800 grayscale rounded-xl"></div><span class="text-[9px] block mt-2 text-center text-gray-500">N&B</span></button>
+                <button type="button" onclick="setFilterType(this, 'sepia')" class="filter-btn shrink-0 p-0.5 border-2 border-transparent rounded-2xl"><div class="w-14 h-14 bg-orange-900/20 sepia rounded-xl"></div><span class="text-[9px] block mt-2 text-center text-gray-500">Sépia</span></button>
+                <button type="button" onclick="setFilterType(this, 'froid')" class="filter-btn shrink-0 p-0.5 border-2 border-transparent rounded-2xl"><div class="w-14 h-14 bg-blue-900/30 rounded-xl"></div><span class="text-[9px] block mt-2 text-center text-gray-500">Froid</span></button>
+                <button type="button" onclick="setFilterType(this, 'chaud')" class="filter-btn shrink-0 p-0.5 border-2 border-transparent rounded-2xl"><div class="w-14 h-14 bg-yellow-600/20 rounded-xl"></div><span class="text-[9px] block mt-2 text-center text-gray-500">Chaud</span></button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              <div id="intensity-group" class="space-y-3 opacity-30">
+                <div class="flex justify-between text-[10px] text-gray-500 font-bold uppercase"><span>Intensité</span> <span id="txt-intensity" class="text-indigo-400">100%</span></div>
+                <input type="range" id="range-intensity" min="0" max="100" value="100" class="w-full accent-indigo-500" oninput="applyAll()" disabled>
+              </div>
+              <div class="space-y-3">
+                <div class="flex justify-between text-[10px] text-gray-500 font-bold uppercase"><span>Luminosité</span> <span id="txt-bright" class="text-indigo-400">100%</span></div>
+                <input type="range" id="range-bright" min="0" max="200" value="100" class="w-full accent-indigo-500" oninput="applyAll()">
+              </div>
+              <div class="space-y-3 md:col-span-2">
+                <div class="flex justify-between text-[10px] text-gray-500 font-bold uppercase"><span>Contraste</span> <span id="txt-contrast" class="text-indigo-400">100%</span></div>
+                <input type="range" id="range-contrast" min="0" max="200" value="100" class="w-full accent-indigo-500" oninput="applyAll()">
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 pt-4">
+              <label for="main-file-input-final" class="w-full bg-[#1c1c1e] border-2 border-indigo-500 py-4 rounded-2xl text-center text-[11px] font-black cursor-pointer shadow-lg active:scale-95 transition-all text-white uppercase tracking-widest">
+                PHOTO
+                <input type="file" id="main-file-input-final" class="hidden" accept="image/*">
+              </label>
+              <%= link_to "ANNULER", posts_path, class: "w-full bg-white text-black py-4 rounded-2xl text-[11px] font-black cursor-pointer shadow-xl active:scale-95 transition-all text-center uppercase tracking-widest" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var currentFilterType = 'none';
+
+    window.togglePanel = function() {
+      const panel = document.getElementById('control-panel');
+      const status = document.getElementById('panel-status');
+      
+      // Passage à 15% pour une visibilité totale des outils
+      if (panel.style.transform === "translateY(15%)") {
+        panel.style.transform = "translateY(88%)";
+        status.innerText = "Ouvrir";
+      } else {
+        panel.style.transform = "translateY(15%)";
+        status.innerText = "Réglages";
+      }
+    }
+
+    // [GARDER LE RESTE DU SCRIPT IDENTIQUE]
+    function applyAll() {
+      const img = document.getElementById('image-preview');
+      const intensity = document.getElementById('range-intensity').value;
+      const bright = document.getElementById('range-bright').value;
+      const contrast = document.getElementById('range-contrast').value;
+      if(img) {
+        let f = '';
+        if (currentFilterType === 'grayscale') f = `grayscale(${intensity}%) `;
+        else if (currentFilterType === 'sepia') f = `sepia(${intensity}%) `;
+        else if (currentFilterType === 'froid') f = `hue-rotate(${intensity * 1.8}deg) saturate(${100 + (intensity/2)}%) `;
+        else if (currentFilterType === 'chaud') f = `sepia(${intensity/2}%) saturate(${100 + parseInt(intensity)}%) hue-rotate(${-intensity/3}deg) `;
+        img.style.filter = `${f} brightness(${bright}%) contrast(${contrast}%)`;
+        document.getElementById('txt-intensity').innerText = intensity + '%';
+        document.getElementById('txt-bright').innerText = bright + '%';
+        document.getElementById('txt-contrast').innerText = contrast + '%';
+      }
+    }
+
+    window.setFilterType = function(btn, type) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.replace('border-indigo-500', 'border-transparent');
+        const s = b.querySelector('span');
+        if(s) { s.classList.remove('text-indigo-400', 'font-bold'); s.classList.add('text-gray-500'); }
+      });
+      btn.classList.replace('border-transparent', 'border-indigo-500');
+      const as = btn.querySelector('span');
+      if(as) { as.classList.add('text-indigo-400', 'font-bold'); as.classList.remove('text-gray-500'); }
+      currentFilterType = type;
+      if (type === 'none') {
+        document.getElementById('range-intensity').value = 100;
+        document.getElementById('range-bright').value = 100;
+        document.getElementById('range-contrast').value = 100;
+        document.getElementById('intensity-group').style.opacity = "0.3";
+        document.getElementById('range-intensity').disabled = true;
+      } else {
+        document.getElementById('intensity-group').style.opacity = "1";
+        document.getElementById('range-intensity').disabled = false;
+      }
+      applyAll();
+    };
+
+    function initEditor() {
+      const fileIn = document.getElementById('main-file-input-final');
+      const textIn = document.getElementById('input-text');
+      if (fileIn) {
+        fileIn.addEventListener('change', function(e) {
+          if (!e.target.files[0]) return;
+          const reader = new FileReader();
+          reader.onload = (res) => {
+            const preview = document.getElementById('image-preview');
+            preview.src = res.target.result;
+            preview.classList.remove('hidden');
+            document.getElementById('placeholder').classList.add('hidden');
+            applyAll();
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        });
+      }
+      if (textIn) {
+        textIn.oninput = () => {
+          if (textIn.value.length > 300) textIn.value = textIn.value.substring(0, 300);
+          document.getElementById('char-count').innerText = textIn.value.length + " / 300";
+        };
+      }
+    }
+    document.addEventListener("turbo:load", initEditor);
+    document.addEventListener("DOMContentLoaded", initEditor);
+  </script>
+<% end %>
