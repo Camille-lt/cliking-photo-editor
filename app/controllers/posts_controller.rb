@@ -3,7 +3,8 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    # On affiche les posts du plus récent au plus ancien
+    @posts = Post.all.with_attached_image.order(created_at: :desc)
   end
 
   # GET /posts/1 or /posts/1.json
@@ -25,7 +26,8 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: "Post was successfully created." }
+        # Redirection vers l'index pour voir tous les Polaroids après publication
+        format.html { redirect_to posts_path, notice: "Ton Polaroid a été publié avec succès !" }
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -60,11 +62,12 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params.expect(:id))
+      @post = Post.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    # Liste des paramètres autorisés pour la base de données
     def post_params
-    params.expect(post: [ :caption, :brightness, :contrast, :saturation, :filter_name, :image ])
+      # Assure-toi que les noms ici correspondent à tes hidden_fields du formulaire
+      params.require(:post).permit(:caption, :image, :brightness, :contrast, :filter_type, :intensity)
     end
 end
