@@ -1,6 +1,6 @@
 # 📸 Cliking Editor
-<img width="1356" height="802" alt="Capture d’écran 2026-03-05 à 20 03 27" src="https://github.com/user-attachments/assets/dd930148-dd96-484d-a211-545528d4be6a" />
-<img width="1352" height="874" alt="Capture d’écran 2026-03-05 à 20 06 12" src="https://github.com/user-attachments/assets/f311de8e-7add-4b53-bb6d-b89632ccd490" />
+<img width="1421" height="905" alt="Capture d’écran 2026-03-06 à 10 45 40" src="https://github.com/user-attachments/assets/9569de89-fbeb-43d5-94f1-b72b7e653969" />
+<img width="1420" height="909" alt="Capture d’écran 2026-03-06 à 10 45 21" src="https://github.com/user-attachments/assets/5b4b299f-f2a5-42b5-9cca-06bcac7ddeb4" />
 
 **Cliking Editor** est une application web interactive d'édition d'images et de messages, conçue avec **Ruby on Rails** et **Tailwind CSS**. Elle offre une expérience utilisateur fluide et immersive, particulièrement optimisée pour les appareils mobiles.
 
