@@ -3,27 +3,29 @@ require "mini_magick"
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit destroy ]
 
-  # Affiche la liste des posts (si tu décides d'en garder en base)
   def index
     @posts = Post.all.order(created_at: :desc)
   end
 
-  # Affiche l'éditeur (ton formulaire)
   def new
     @post = Post.new
   end
 
-  # Action déclenchée par le bouton "ENREGISTRER"
   def create
-    # 1. Récupération des paramètres envoyés par le formulaire
     style = params[:post] || {}
     caption = params[:post][:caption]
     
     if style[:image].present? && caption.present?
-      # 2. Ouverture de l'image temporaire via MiniMagick
+      # 1. Ouverture de l'image
       image = MiniMagick::Image.open(style[:image].tempfile.path)
       
-      # 3. Préparation des variables de style (Filtres, couleurs, etc.)
+      # --- LE CALCUL MAGIQUE POUR L'UNIFORMITÉ ---
+      # On force la taille du texte à 10% de la largeur de l'image.
+      # Cela règle le problème de différence entre ton Mac et Render.
+      font_size = (image.width * 0.10).to_i
+      font_size = 30 if font_size < 30 # Sécurité taille minimum
+      
+      # 2. Préparation des variables
       txt_color = style[:text_color] == 'indigo-500' ? '#6366f1' : (style[:text_color] || 'white')
       bg_mode   = style[:badge_mode] || 'none'
       filter    = style[:filter_type] || 'none'
@@ -31,14 +33,14 @@ class PostsController < ApplicationController
       contrast  = style[:contrast] || "100"
       intensity = style[:intensity].to_i || 100
 
-      # --- GESTION DE LA POLICE (MAC VS PRODUCTION/RENDER) ---
+      # Gestion de la police selon l'environnement
       if File.exist?("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
-        font_path = "/System/Library/Fonts/Supplemental/Arial Bold.ttf" # Ton Mac
+        font_path = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
       else
-        font_path = "DejaVu-Sans-Bold" # Standard sur les serveurs Linux (Render)
+        font_path = "DejaVu-Sans-Bold" 
       end
 
-      # 4. Application des transformations via ImageMagick
+      # 3. Application des transformations
       image.combine_options do |c|
         c.auto_orient
         
@@ -55,20 +57,16 @@ class PostsController < ApplicationController
           c.colorize "20%"
         end
 
-        # Luminosité (modulate : brightness, saturation, hue)
+        # Lumière et Contraste
         c.modulate "#{bright},100,100"
-        
-        # Contraste (sigmoidal-contrast : douceur du rendu)
-        if contrast.to_i != 100
-          c.sigmoidal_contrast "#{((contrast.to_i - 100) / 10).abs}x50%"
-        end
+        c.sigmoidal_contrast "#{((contrast.to_i - 100) / 10).abs}x50%" if contrast.to_i != 100
 
-        # Configuration du texte
+        # Texte avec taille proportionnelle
         c.gravity "Center"
         c.font font_path
-        c.pointsize "45"
+        c.pointsize font_size.to_s
         
-        # Définition de la couleur du badge (le fond du texte)
+        # Gestion du fond du texte (Badge)
         u_color = "none"
         if bg_mode == 'dark'
           u_color = "rgba(0,0,0,0.6)"
@@ -81,26 +79,22 @@ class PostsController < ApplicationController
 
         c.fill txt_color
         c.undercolor u_color
-        
-        # Dessine le texte sur l'image
         c.annotate "0", caption
       end
 
-      # 5. TÉLÉCHARGEMENT DIRECT VERS TON ORDINATEUR
-      # Le fichier est envoyé au navigateur et le processus s'arrête là.
+      # 4. ENVOI DU FICHIER DIRECTEMENT
       send_file image.path, 
-                filename: "cliking_edit_#{Time.now.to_i}.png", 
+                filename: "cliking_#{Time.now.to_i}.png", 
                 type: "image/png", 
                 disposition: "attachment"
     else
-      # Si l'image ou le texte est manquant, on renvoie vers l'éditeur
-      redirect_to new_post_path, alert: "Veuillez choisir une photo et un message."
+      redirect_to new_post_path, alert: "Image ou texte manquant."
     end
   end
 
   def destroy
     @post.destroy!
-    redirect_to posts_path, status: :see_other, notice: "Post supprimé."
+    redirect_to posts_path, status: :see_other
   end
 
   private
@@ -109,7 +103,6 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
   end
 
-  # Paramètres autorisés pour Rails
   def post_params_to_save
     params.require(:post).permit(:caption, :image)
   end
