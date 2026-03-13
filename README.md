@@ -1,26 +1,31 @@
 # 📸 Cliking Editor
-<img width="1421" height="905" alt="Capture d’écran 2026-03-06 à 10 45 40" src="https://github.com/user-attachments/assets/9569de89-fbeb-43d5-94f1-b72b7e653969" />
-<img width="1420" height="909" alt="Capture d’écran 2026-03-06 à 10 45 21" src="https://github.com/user-attachments/assets/5b4b299f-f2a5-42b5-9cca-06bcac7ddeb4" />
 
-**Cliking Editor** est une application web interactive d'édition d'images et de messages, conçue avec **Ruby on Rails** et **Tailwind CSS**. Elle offre une expérience utilisateur fluide et immersive, particulièrement optimisée pour les appareils mobiles.
+**Cliking Editor** est une application web interactive d'édition d'images et de messages, conçue avec **Ruby on Rails** et **Tailwind CSS**. Elle offre une expérience utilisateur fluide et immersive, particulièrement optimisée pour la création rapide et le téléchargement direct.
+
+<img width="1421" height="905" alt="Cliking Editor Interface" src="https://github.com/user-attachments/assets/9569de89-fbeb-43d5-94f1-b72b7e653969" />
+
+<img width="1420" height="909" alt="Cliking Editor Preview" src="https://github.com/user-attachments/assets/a731fbea-4fc9-4bcb-a5f1-dfa50d714ff2" />
 
 ## ✨ Fonctionnalités
 
 * **Éditeur de message** : Saisie de texte avec compteur de caractères (limite de 300).
-* **Aperçu dynamique** : Visualisation instantanée du média téléchargé.
+* **Aperçu dynamique** : Visualisation instantanée du média téléchargé grâce à JavaScript.
 * **Panneau de réglages interactif** : Interface escamotable pour ajuster les filtres et les paramètres d'image.
-* **Filtres d'image** : Application de filtres (N&B, Sépia, Froid, Chaud) en temps réel via CSS.
-* **Ajustements précis** : Sliders pour régler l'intensité, la luminosité et le contraste.
-* **Design Responsive** : 
-    * **Desktop** : Layout en deux colonnes avec zone de texte encadrée et centrée.
-    * **Mobile** : Interface "Full Screen" avec panneau coulissant optimisé pour masquer la zone de texte lors des réglages.
+* **Traitement d'image (MiniMagick)** : 
+    * Application de filtres (N&B, Sépia, Froid, Chaud).
+    * Ajustements précis via Sliders : intensité, luminosité et contraste.
+* **Légende Stylisée (Badge Text)** :
+    * Choix de la couleur et du style de fond (Sombre, Clair, Flou).
+    * **Rendu Proportionnel** : La taille du texte s'adapte automatiquement à la résolution de l'image source pour un résultat identique à l'aperçu.
+* **Téléchargement Direct** : Les images sont traitées à la volée et téléchargées instantanément. Aucune donnée n'est stockée sur le serveur, garantissant la confidentialité.
 
 ## 🛠️ Stack Technique
 
 * **Framework** : Ruby on Rails 7+
+* **Traitement Image** : ImageMagick & MiniMagick
 * **Style** : Tailwind CSS
-* **Interactivité** : JavaScript (Vanilla) & Hotwire/Turbo
-* **Base de données** : PostgreSQL (Production) / SQLite (Local)
+* **Interactivité** : Hotwire (Stimulus & Turbo)
+* **Déploiement** : Render
 
 ## 🚀 Installation
 
@@ -30,16 +35,13 @@
    cd cliking-editor
 Installer les dépendances
 
-**Bash**
+Bash
 bundle install
-yarn install
 Préparer la base de données
 
-**Bash**
-rails db:create
-rails db:migrate
+Bash
+rails db:prepare
 Lancer le serveur
 
-**Bash**
-
+Bash
 ./bin/dev
