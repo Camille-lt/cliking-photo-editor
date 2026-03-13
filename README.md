@@ -4,7 +4,6 @@
 
 <img width="1421" height="905" alt="Cliking Editor Interface" src="https://github.com/user-attachments/assets/9569de89-fbeb-43d5-94f1-b72b7e653969" />
 
-<img width="1420" height="909" alt="Cliking Editor Preview" src="https://github.com/user-attachments/assets/a731fbea-4fc9-4bcb-a5f1-dfa50d714ff2" />
 
 ## ✨ Fonctionnalités
 
